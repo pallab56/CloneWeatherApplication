@@ -1,6 +1,7 @@
-import 'dart:ui';
-
 import 'package:flutter/material.dart';
+import 'package:rivaanranawaatweatherapp/additional_information_item_card.dart';
+import 'package:rivaanranawaatweatherapp/hourly_forecast_item_card.dart';
+import 'package:rivaanranawaatweatherapp/main_card.dart';
 
 class WeatherScreen extends StatelessWidget {
   const WeatherScreen({super.key});
@@ -37,122 +38,49 @@ class WeatherScreen extends StatelessWidget {
             /// Weather Forecast card
             Text(
               'Weather Forecast',
-              style: TextStyle(fontSize: 32, fontWeight: FontWeight.w600),
+              style: TextStyle(fontSize: 26, fontWeight: FontWeight.w400),
             ),
             SingleChildScrollView(
               scrollDirection: Axis.horizontal,
               child: Row(
                 children: [
-                  HourlyForeCastItemCard(),
-                  HourlyForeCastItemCard(),
-                  HourlyForeCastItemCard(),
-                  HourlyForeCastItemCard(),
-                  HourlyForeCastItemCard(),
+                  HourlyForeCastItemCard(
+                    icon: Icons.cloud_rounded,
+                    time: '06:00',
+                    temperature: '456',
+                  ),
                 ],
               ),
             ),
-            const SizedBox(height: 20),
+            const SizedBox(height: 10),
 
             /// Additional card
-            const Placeholder(fallbackHeight: 150),
-            const SizedBox(height: 20),
-          ],
-        ),
-      ),
-    );
-  }
-}
-
-class HourlyForeCastItemCard extends StatelessWidget {
-  const HourlyForeCastItemCard({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 7),
-      child: SingleChildScrollView(
-        scrollDirection: Axis.horizontal,
-        child: SizedBox(
-          height: 145,
-          width: 120,
-          child: Card(
-            elevation: 3,
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadiusGeometry.circular(12),
+            Text(
+              "Additional Information",
+              style: TextStyle(fontSize: 26, fontWeight: FontWeight.w400),
             ),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              crossAxisAlignment: CrossAxisAlignment.center,
+            const SizedBox(height: 8),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceAround,
               children: [
-                Text(
-                  '9:00',
-                  style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
+                AdditionalInformationItemCard(
+                  icon: Icons.water_drop_rounded,
+                  label: 'Humidity',
+                  value: 94,
                 ),
-                SizedBox(height: 8),
-                Icon(Icons.cloud_rounded, size: 32, color: Colors.white),
-                SizedBox(height: 8),
-                Text(
-                  '301.17',
-                  style: TextStyle(
-                    fontSize: 19,
-                    fontWeight: FontWeight.w600,
-                    color: Colors.white30,
-                  ),
+                AdditionalInformationItemCard(
+                  icon: Icons.air_outlined,
+                  label: 'Wind Speed',
+                  value: 7.67,
+                ),
+                AdditionalInformationItemCard(
+                  icon: Icons.beach_access_rounded,
+                  label: 'Pressure',
+                  value: 91,
                 ),
               ],
             ),
-          ),
-        ),
-      ),
-    );
-  }
-}
-
-class MainCard extends StatelessWidget {
-  const MainCard({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return SizedBox(
-      width: double.infinity,
-      child: Card(
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadiusGeometry.circular(12),
-        ),
-        elevation: 2,
-        child: Padding(
-          padding: const EdgeInsets.symmetric(vertical: 8),
-          child: ClipRRect(
-            borderRadius: BorderRadiusGeometry.circular(5),
-            child: BackdropFilter(
-              filter: ImageFilter.blur(sigmaX: 4, sigmaY: 4),
-              child: Column(
-                children: [
-                  Text(
-                    '300.67° F',
-                    style: TextStyle(fontSize: 35, fontWeight: FontWeight.bold),
-                  ),
-
-                  const SizedBox(height: 15),
-
-                  const Icon(
-                    Icons.cloud_rounded,
-                    size: 64,
-                    color: Colors.white,
-                  ),
-                  const SizedBox(height: 15),
-                  const Text(
-                    'Rain',
-                    style: TextStyle(
-                      fontSize: 25,
-                      fontWeight: FontWeight.bold,
-                      color: Colors.white30,
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          ),
+          ],
         ),
       ),
     );
