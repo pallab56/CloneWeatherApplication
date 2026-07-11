@@ -39,7 +39,18 @@ class WeatherScreen extends StatelessWidget {
               'Weather Forecast',
               style: TextStyle(fontSize: 32, fontWeight: FontWeight.w600),
             ),
-            const WeatherForeCastCard(),
+            SingleChildScrollView(
+              scrollDirection: Axis.horizontal,
+              child: Row(
+                children: [
+                  HourlyForeCastItemCard(),
+                  HourlyForeCastItemCard(),
+                  HourlyForeCastItemCard(),
+                  HourlyForeCastItemCard(),
+                  HourlyForeCastItemCard(),
+                ],
+              ),
+            ),
             const SizedBox(height: 20),
 
             /// Additional card
@@ -52,13 +63,47 @@ class WeatherScreen extends StatelessWidget {
   }
 }
 
-class WeatherForeCastCard extends StatelessWidget {
-  const WeatherForeCastCard({super.key});
+class HourlyForeCastItemCard extends StatelessWidget {
+  const HourlyForeCastItemCard({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return Row(
-      children: [],
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 7),
+      child: SingleChildScrollView(
+        scrollDirection: Axis.horizontal,
+        child: SizedBox(
+          height: 145,
+          width: 120,
+          child: Card(
+            elevation: 3,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadiusGeometry.circular(12),
+            ),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                Text(
+                  '9:00',
+                  style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
+                ),
+                SizedBox(height: 8),
+                Icon(Icons.cloud_rounded, size: 32, color: Colors.white),
+                SizedBox(height: 8),
+                Text(
+                  '301.17',
+                  style: TextStyle(
+                    fontSize: 19,
+                    fontWeight: FontWeight.w600,
+                    color: Colors.white30,
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
+      ),
     );
   }
 }
