@@ -8,10 +8,10 @@ import 'package:flutter/material.dart';
 import 'package:rivaanranawaatweatherapp/weather_screen.dart';
 
 class MainCard extends StatelessWidget {
-  final  String temp;
+   final  String temp;
   const MainCard({
     Key? key,
-    required this.temp,
+     required this.temp,
   }) : super(key: key);
 
   @override
@@ -32,7 +32,7 @@ class MainCard extends StatelessWidget {
               child: Column(
                 children: [
                   Text(
-                    '$temp ',
+                    '$temp k',
                     style: TextStyle(fontSize: 35, fontWeight: FontWeight.bold),
                   ),
 
