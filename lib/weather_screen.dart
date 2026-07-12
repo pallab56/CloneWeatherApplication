@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:rivaanranawaatweatherapp/additional_information_item_card.dart';
 import 'package:rivaanranawaatweatherapp/hourly_forecast_item_card.dart';
@@ -13,45 +15,59 @@ class WeatherScreen extends StatefulWidget {
 }
 
 class _WeatherScreenState extends State<WeatherScreen> {
+  late double temp = 0;
+
+  /// Uri-->> Uniform Resource Identifier
+  /// we can use either Uri.parse('') or Uri.https() both work
+  /// URL -->> Uniform Resource Locator
+  /// URL is subtype of URI
+
+  /// have to put http:// before paste the url
+  /// Break Down The Url api.openweathermap.org/data/2.5/weather?q=London,uk&APPID=d307480bfedd81e6b13929accc7b55f7
+  /// https:// ---- had to add
+  /// api.openweathermap.org --> web Location
+  /// /2.5 ----> their model
+  /// AFter ? mark all this called as Queries
+  /// q=London,uk&APPID=d307480bfedd81e6b13929accc7b55f7
+  /// q=London,uk --> place Name want to get the weather off
+  /// set the place name into a external variable
+  /// String cityName = 'London'; outSIde the get function && inside of getCurrentWeather()
+  /// APPID=d307480bfedd81e6b13929accc7b55f7 -->this is our AppId
+  /// appId need to be stored in .env file which can be hidden by gitignore
+  /// even when want to deploy your website assuming not want to deploy this website
+  /// Bad practice
+  /// creating another separate dart file called
+  /// secret.dart and set appid like...
+  /// const openWeatherAPIKey = 'd307480bfedd81e6b13929accc7b55f7';
+  ///
+
   Future getCurrentWeather() async {
-    String cityName = 'London';
-    final result = await http.get(
-      /// Uri-->> Uniform Resource Identifier
-      /// we can use either Uri.parse('') or Uri.https() both work
-      /// URL -->> Uniform Resource Locator
-      /// URL is subtype of URI
+    try {
+      String cityName = 'London';
+      final result = await http.get(
+        Uri.parse(
+          'https://api.openweathermap.org/data/2.5/forecast?q=$cityName,uk&APPID=$openWeatherAPIKey',
+        ),
+      );
 
-      /// have to put http:// before paste the url
-      /// Break Down The Url api.openweathermap.org/data/2.5/weather?q=London,uk&APPID=d307480bfedd81e6b13929accc7b55f7
-      /// https:// ---- had to add
-      /// api.openweathermap.org --> web Location
-      /// /2.5 ----> their model
-      /// AFter ? mark all this called as Queries
-      /// q=London,uk&APPID=d307480bfedd81e6b13929accc7b55f7
-      /// q=London,uk --> place Name want to get the weather off
-      /// set the place name into a external variable
-      /// String cityName = 'London'; outSIde the get function && inside of getCurrentWeather()
-      /// APPID=d307480bfedd81e6b13929accc7b55f7 -->this is our AppId
-      /// appId need to be stored in .env file which can be hidden by gitignore
-      /// even when want to deploy your website assuming not want to deploy this website
-      /// Bad practice
-      /// creating another separate dart file called
-      /// secret.dart and set appid like...
-      /// const openWeatherAPIKey = 'd307480bfedd81e6b13929accc7b55f7';
-      /// 
-      
-      Uri.parse(
-        'https://api.openweathermap.org/data/2.5/weather?q=$cityName,uk&APPID=$openWeatherAPIKey',
-      ),
-    );
-
-    print(result.body);
+      final data = jsonDecode(result.body);
+      if (data['cod'] != '200') {
+        throw 'An Unexpected Error Occurerd';
+      }
+      setState(() {
+        temp = data['list'][0]["main"]["temp"];
+      });
+    } catch (e) {
+      throw e.toString();
+    }
   }
 
   @override
   void initState() {
     super.initState();
+
     getCurrentWeather();
+  
   }
 
   @override
@@ -80,7 +96,9 @@ class _WeatherScreenState extends State<WeatherScreen> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             /// main card
-            MainCard(),
+           temp==0
+           ? Center(child: const CircularProgressIndicator())
+           : MainCard(temp: temp.toString()),
             const SizedBox(height: 20),
 
             /// Weather Forecast card
