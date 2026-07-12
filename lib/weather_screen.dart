@@ -38,6 +38,8 @@ class _WeatherScreenState extends State<WeatherScreen> {
       /// creating another separate dart file called
       /// secret.dart and set appid like...
       /// const openWeatherAPIKey = 'd307480bfedd81e6b13929accc7b55f7';
+      /// 
+      
       Uri.parse(
         'https://api.openweathermap.org/data/2.5/weather?q=$cityName,uk&APPID=$openWeatherAPIKey',
       ),
