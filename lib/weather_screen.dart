@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:rivaanranawaatweatherapp/additional_information_item_card.dart';
 import 'package:rivaanranawaatweatherapp/hourly_forecast_item_card.dart';
 import 'package:rivaanranawaatweatherapp/main_card.dart';
@@ -15,6 +16,8 @@ class WeatherScreen extends StatefulWidget {
 }
 
 class _WeatherScreenState extends State<WeatherScreen> {
+  late Future<Map<String, dynamic>> weather;
+
   // late double temp = 0;
 
   /// Uri-->> Uniform Resource Identifier
@@ -40,7 +43,6 @@ class _WeatherScreenState extends State<WeatherScreen> {
   /// secret.dart and set appid like...
   /// const openWeatherAPIKey = 'd307480bfedd81e6b13929accc7b55f7';
   ///
-
   Future<Map<String, dynamic>> getCurrentWeather() async {
     String cityName = 'London';
     try {
@@ -68,13 +70,13 @@ class _WeatherScreenState extends State<WeatherScreen> {
     //     throw e.toString();
     //   }
     // }
+  }
 
-    // @override
-    // void initState() {
-    //   super.initState();
+  @override
+  void initState() {
+    super.initState();
 
-    //   getCurrentWeather();
-    // }
+    weather = getCurrentWeather();
   }
 
   @override
@@ -90,7 +92,10 @@ class _WeatherScreenState extends State<WeatherScreen> {
             padding: const EdgeInsets.symmetric(horizontal: 10),
             child: InkWell(
               onTap: () {
-                print('Refresh Icon Clicked');
+                // to reload the entire build function
+                setState(() {
+                  weather = getCurrentWeather();
+                });
               },
               child: const Icon(Icons.refresh_rounded),
             ),
@@ -98,7 +103,7 @@ class _WeatherScreenState extends State<WeatherScreen> {
         ],
       ),
       body: FutureBuilder(
-        future: getCurrentWeather(),
+        future: weather,
         builder: (context, snapshot) {
           print(snapshot);
           if (snapshot.connectionState == ConnectionState.waiting) {
@@ -160,10 +165,13 @@ class _WeatherScreenState extends State<WeatherScreen> {
                       final hourlySky = hourlyForeCast['weather'][0]['main'];
                       final hourlyTemp = hourlyForeCast['main']['temp']
                           .toString();
+                      final hourlyForecastTime = hourlyForeCast['dt_txt']
+                          .toString();
+                      final time = DateTime.parse(hourlyForecastTime);
                       return Padding(
                         padding: const EdgeInsets.all(0.0),
                         child: HourlyForeCastItemCard(
-                          time: hourlyForeCast['dt_txt'].toString(),
+                          time: DateFormat.j().format(time),
                           icon: hourlySky == 'Clouds' || hourlySky == 'Rain'
                               ? Icons.cloud
                               : Icons.sunny,
