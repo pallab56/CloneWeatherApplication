@@ -102,59 +102,78 @@ class _WeatherScreenState extends State<WeatherScreen> {
         builder: (context, snapshot) {
           print(snapshot);
           if (snapshot.connectionState == ConnectionState.waiting) {
-            return const CircularProgressIndicator.adaptive();
+            return Center(child: const CircularProgressIndicator.adaptive());
           }
           if (snapshot.hasError) {
             return Text(snapshot.error.toString());
           }
           final data = snapshot.data!;
-          final currentTemp = data['list'][0]["main"]["temp"];
+          final currentWeatherData = data['list'][0];
+
+          // main card data
+          final currentTemp = currentWeatherData["main"]["temp"];
+          final currentSky = currentWeatherData['weather'][0]['main'];
+          // additional information data
+          final currentPressure = currentWeatherData['main']['pressure'];
+          final currentHumidity = currentWeatherData['main']['humidity'];
+          final currentWindSpeed = currentWeatherData['wind']['speed'];
+          // Hourly ForeCast Data
+          final int weatherDatalength = data['list'].length;
+
           return Padding(
             padding: const EdgeInsets.symmetric(horizontal: 10),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 /// main card
-                MainCard(temp:currentTemp.toString()),
+                MainCard(temp: currentTemp.toString(), currentSky: currentSky),
                 const SizedBox(height: 20),
 
                 /// Weather Forecast card
                 Text(
-                  'Weather Forecast',
+                  'Hourly Forecast',
                   style: TextStyle(fontSize: 26, fontWeight: FontWeight.w400),
                 ),
-                SingleChildScrollView(
-                  scrollDirection: Axis.horizontal,
-                  child: Row(
-                    children: [
-                      HourlyForeCastItemCard(
-                        icon: Icons.cloud_rounded,
-                        time: '06:00',
-                        temperature: '456',
-                      ),
-                      HourlyForeCastItemCard(
-                        icon: Icons.cloudy_snowing,
-                        time: '06:00',
-                        temperature: '456',
-                      ),
-                      HourlyForeCastItemCard(
-                        icon: Icons.cloud_rounded,
-                        time: '06:00',
-                        temperature: '456',
-                      ),
-                      HourlyForeCastItemCard(
-                        icon: Icons.cloud_rounded,
-                        time: '06:00',
-                        temperature: '456',
-                      ),
-                      HourlyForeCastItemCard(
-                        icon: Icons.cloud_rounded,
-                        time: '06:00',
-                        temperature: '456',
-                      ),
-                    ],
+
+                /// using loop to create 40 items together it's heavy work
+                /// can affect the performance of app it's insane
+                //Using Loop
+                // for(var i=0;i<=12;i++)
+                //    Padding(
+                //      padding: const EdgeInsets.all(0.0),
+                //      child: HourlyForeCastItemCard(
+                //       time: data['list'][i+1]['dt'].toString(),
+                //       icon: data['list'][i+1]['weather'][0]['main']=='Clouds'||
+                //       data['list'][i+1]['weather'][0]['main']=='Rain'
+                //       ?Icons.cloud
+                //       :Icons.sunny,
+                //       temperature: data['list'][i+1]['main']['temp'].toString(),
+                //                            ),
+                //    ),
+                SizedBox(
+                  height: 180,
+                  child: ListView.builder(
+                    scrollDirection: Axis.horizontal,
+                    itemCount: 5,
+                    itemBuilder: (BuildContext context, index) {
+                      final hourlyForeCast = data['list'][index + 1];
+                      final hourlySky = hourlyForeCast['weather'][0]['main'];
+                      final hourlyTemp = hourlyForeCast['main']['temp']
+                          .toString();
+                      return Padding(
+                        padding: const EdgeInsets.all(0.0),
+                        child: HourlyForeCastItemCard(
+                          time: hourlyForeCast['dt_txt'].toString(),
+                          icon: hourlySky == 'Clouds' || hourlySky == 'Rain'
+                              ? Icons.cloud
+                              : Icons.sunny,
+                          temperature: hourlyTemp,
+                        ),
+                      );
+                    },
                   ),
                 ),
+
                 const SizedBox(height: 10),
 
                 /// Additional card
@@ -169,17 +188,17 @@ class _WeatherScreenState extends State<WeatherScreen> {
                     AdditionalInformationItemCard(
                       icon: Icons.water_drop_rounded,
                       label: 'Humidity',
-                      value: 94,
+                      value: currentHumidity.toString(),
                     ),
                     AdditionalInformationItemCard(
                       icon: Icons.air_outlined,
                       label: 'Wind Speed',
-                      value: 7.67,
+                      value: currentWindSpeed.toString(),
                     ),
                     AdditionalInformationItemCard(
                       icon: Icons.beach_access_rounded,
                       label: 'Pressure',
-                      value: 91,
+                      value: currentPressure.toString(),
                     ),
                   ],
                 ),
